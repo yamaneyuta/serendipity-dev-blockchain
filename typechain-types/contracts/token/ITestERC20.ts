@@ -29,13 +29,20 @@ export interface ITestERC20Interface extends Interface {
       | "allowance"
       | "approve"
       | "balanceOf"
+      | "decimals"
       | "initialize"
+      | "mint"
+      | "name"
+      | "setExchangeOracle"
+      | "symbol"
       | "totalSupply"
       | "transfer"
       | "transferFrom"
   ): FunctionFragment;
 
-  getEvent(nameOrSignatureOrTopic: "Approval" | "Transfer"): EventFragment;
+  getEvent(
+    nameOrSignatureOrTopic: "Approval" | "SetExchangeOracle" | "Transfer"
+  ): EventFragment;
 
   encodeFunctionData(
     functionFragment: "allowance",
@@ -49,10 +56,21 @@ export interface ITestERC20Interface extends Interface {
     functionFragment: "balanceOf",
     values: [AddressLike]
   ): string;
+  encodeFunctionData(functionFragment: "decimals", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "initialize",
     values: [AddressLike, string, string, BigNumberish]
   ): string;
+  encodeFunctionData(
+    functionFragment: "mint",
+    values: [AddressLike, BigNumberish]
+  ): string;
+  encodeFunctionData(functionFragment: "name", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "setExchangeOracle",
+    values: [AddressLike, AddressLike]
+  ): string;
+  encodeFunctionData(functionFragment: "symbol", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "totalSupply",
     values?: undefined
@@ -69,7 +87,15 @@ export interface ITestERC20Interface extends Interface {
   decodeFunctionResult(functionFragment: "allowance", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "decimals", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "mint", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "setExchangeOracle",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "symbol", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "totalSupply",
     data: BytesLike
@@ -92,6 +118,28 @@ export namespace ApprovalEvent {
     owner: string;
     spender: string;
     value: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace SetExchangeOracleEvent {
+  export type InputTuple = [
+    account: AddressLike,
+    ethUsdOracle: AddressLike,
+    meUsdOracle: AddressLike
+  ];
+  export type OutputTuple = [
+    account: string,
+    ethUsdOracle: string,
+    meUsdOracle: string
+  ];
+  export interface OutputObject {
+    account: string;
+    ethUsdOracle: string;
+    meUsdOracle: string;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -174,6 +222,8 @@ export interface ITestERC20 extends BaseContract {
 
   balanceOf: TypedContractMethod<[account: AddressLike], [bigint], "view">;
 
+  decimals: TypedContractMethod<[], [bigint], "view">;
+
   initialize: TypedContractMethod<
     [
       initialOwner: AddressLike,
@@ -184,6 +234,22 @@ export interface ITestERC20 extends BaseContract {
     [void],
     "nonpayable"
   >;
+
+  mint: TypedContractMethod<
+    [account: AddressLike, amount: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
+
+  name: TypedContractMethod<[], [string], "view">;
+
+  setExchangeOracle: TypedContractMethod<
+    [ethUsdOracle: AddressLike, meUsdOracle: AddressLike],
+    [void],
+    "nonpayable"
+  >;
+
+  symbol: TypedContractMethod<[], [string], "view">;
 
   totalSupply: TypedContractMethod<[], [bigint], "view">;
 
@@ -221,6 +287,9 @@ export interface ITestERC20 extends BaseContract {
     nameOrSignature: "balanceOf"
   ): TypedContractMethod<[account: AddressLike], [bigint], "view">;
   getFunction(
+    nameOrSignature: "decimals"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
     nameOrSignature: "initialize"
   ): TypedContractMethod<
     [
@@ -232,6 +301,26 @@ export interface ITestERC20 extends BaseContract {
     [void],
     "nonpayable"
   >;
+  getFunction(
+    nameOrSignature: "mint"
+  ): TypedContractMethod<
+    [account: AddressLike, amount: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
+  getFunction(
+    nameOrSignature: "name"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "setExchangeOracle"
+  ): TypedContractMethod<
+    [ethUsdOracle: AddressLike, meUsdOracle: AddressLike],
+    [void],
+    "nonpayable"
+  >;
+  getFunction(
+    nameOrSignature: "symbol"
+  ): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "totalSupply"
   ): TypedContractMethod<[], [bigint], "view">;
@@ -258,6 +347,13 @@ export interface ITestERC20 extends BaseContract {
     ApprovalEvent.OutputObject
   >;
   getEvent(
+    key: "SetExchangeOracle"
+  ): TypedContractEvent<
+    SetExchangeOracleEvent.InputTuple,
+    SetExchangeOracleEvent.OutputTuple,
+    SetExchangeOracleEvent.OutputObject
+  >;
+  getEvent(
     key: "Transfer"
   ): TypedContractEvent<
     TransferEvent.InputTuple,
@@ -275,6 +371,17 @@ export interface ITestERC20 extends BaseContract {
       ApprovalEvent.InputTuple,
       ApprovalEvent.OutputTuple,
       ApprovalEvent.OutputObject
+    >;
+
+    "SetExchangeOracle(address,address,address)": TypedContractEvent<
+      SetExchangeOracleEvent.InputTuple,
+      SetExchangeOracleEvent.OutputTuple,
+      SetExchangeOracleEvent.OutputObject
+    >;
+    SetExchangeOracle: TypedContractEvent<
+      SetExchangeOracleEvent.InputTuple,
+      SetExchangeOracleEvent.OutputTuple,
+      SetExchangeOracleEvent.OutputObject
     >;
 
     "Transfer(address,address,uint256)": TypedContractEvent<
