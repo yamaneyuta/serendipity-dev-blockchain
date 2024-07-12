@@ -2,7 +2,9 @@
   "name": "@yamaneyuta/serendipity-dev-blockchain",
   "version": "1.0.0",
   "scripts": {
-    "start": "hardhat node"
+    "start": "run-p start:*",
+    "start:deploy": "ts-node src/index.ts",
+    "start:node": "hardhat node"
   },
   "dependencies": {
     "@nomicfoundation/hardhat-toolbox": "^5.0.0",
