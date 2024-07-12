@@ -1,4 +1,4 @@
-import { ethers } from "ethers";
+import { ethers, NonceManager } from "ethers";
 
 const HOST = "http://127.0.0.1:8545";
 const MNEMONIC = "test test test test test test test test test test test junk";
@@ -16,6 +16,6 @@ const createProvider = () => {
 };
 
 const createWallet = () => {
-    return ethers.HDNodeWallet.fromMnemonic(ethers.Mnemonic.fromPhrase(MNEMONIC));
+    return new NonceManager(ethers.HDNodeWallet.fromMnemonic(ethers.Mnemonic.fromPhrase(MNEMONIC)));
 };
 
