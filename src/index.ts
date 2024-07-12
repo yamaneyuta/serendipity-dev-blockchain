@@ -1,10 +1,12 @@
-import { TransactionRequest, JsonRpcProvider } from "ethers";
-import { ITestOracle } from "../typechain-types/contracts/oracle/ITestOracle";
+import { JsonRpcProvider } from "ethers";
 import { createSigner } from "./features/account/createSigner";
 import { deployTestERC20 } from "./features/contract/deployTestERC20";
 import { deployTestOracle } from "./features/contract/deployTestOracle";
+import { waitForNetworkReady } from "./features/network/waitForNetworkReady";
 
 const main = async () => {
+	await waitForNetworkReady(10); // hardhatが起動するまで待機
+
 	const signer = await createSigner();
 	const chainId = (await signer.provider!.getNetwork()).chainId;
 
@@ -55,6 +57,14 @@ const main = async () => {
 		await tx.wait();
 	}
 	console.log(`TJPY deployed at ${await tjp.getAddress()}`);
+
+
+	// ダミーアカウントに対して1wei送信することでスマートコントラクトの初期設定が完了した合図とする。
+	const dummyAccount = "0x0000000000000000000000000000000000000001";
+	const tx = await (signer.provider as JsonRpcProvider).send("eth_sendTransaction", [
+		{from: await signer.getAddress(), to: dummyAccount, value: "0x01" }
+	]);
+	await signer.provider!.waitForTransaction(tx);
 };
 
 (async () => {
