@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
 
-const HOST = "http://localhost:8545";
+const HOST = "http://127.0.0.1:8545";
 const MNEMONIC = "test test test test test test test test test test test junk";
 
 export const createSigner = async() => {
@@ -12,7 +12,7 @@ export const createSigner = async() => {
 };
 
 const createProvider = () => {
-    return new ethers.JsonRpcProvider(HOST);
+    return new ethers.JsonRpcProvider(HOST, undefined, { staticNetwork: true });
 };
 
 const createWallet = () => {
