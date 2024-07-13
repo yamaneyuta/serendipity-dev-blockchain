@@ -1,6 +1,7 @@
 import { ethers, NonceManager } from "ethers";
 
-const HOST = "http://127.0.0.1:8545";
+const PORT = process.env.HARDHAT_PORT || "8545";
+const HOST = `http://127.0.0.1:${PORT}`;
 const MNEMONIC = "test test test test test test test test test test test junk";
 
 export const createSigner = async() => {

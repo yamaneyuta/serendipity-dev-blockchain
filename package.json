@@ -4,7 +4,7 @@
   "scripts": {
     "start": "run-p start:*",
     "start:deploy": "ts-node src/index.ts",
-    "start:node": "hardhat node"
+    "start:node": "HARDHAT_PORT=${HARDHAT_PORT:-8545} hardhat node --port ${HARDHAT_PORT}"
   },
   "dependencies": {
     "@nomicfoundation/hardhat-toolbox": "^5.0.0",
