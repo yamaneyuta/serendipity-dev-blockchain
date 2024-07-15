@@ -13,7 +13,7 @@ export const createSigner = async() => {
 };
 
 const createProvider = () => {
-    return new ethers.JsonRpcProvider(HOST, undefined, { staticNetwork: true });
+    return new ethers.JsonRpcProvider(HOST, undefined, { staticNetwork: true, pollingInterval: 0 });
 };
 
 const createWallet = () => {
