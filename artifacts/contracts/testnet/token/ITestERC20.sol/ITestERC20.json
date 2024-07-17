@@ -1,7 +1,7 @@
 {
   "_format": "hh-sol-artifact-1",
   "contractName": "ITestERC20",
-  "sourceName": "contracts/token/ITestERC20.sol",
+  "sourceName": "contracts/testnet/token/ITestERC20.sol",
   "abi": [
     {
       "inputs": [

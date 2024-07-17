@@ -1,8 +1,8 @@
 import { ethers } from "ethers";
-import { ITestOracle } from "../../../typechain-types/contracts/oracle/ITestOracle";
+import { ITestOracle } from "../../../typechain-types/contracts/privatenet/oracle/ITestOracle";
 
-import ITestOracleData from "../../../artifacts/contracts/oracle/ITestOracle.sol/ITestOracle.json";
-import TestOracleData from "../../../artifacts/contracts/oracle/TestOracle.sol/TestOracle.json";
+import ITestOracleData from "../../../artifacts/contracts/privatenet/oracle/ITestOracle.sol/ITestOracle.json";
+import TestOracleData from "../../../artifacts/contracts/privatenet/oracle/TestOracle.sol/TestOracle.json";
 
 export const deployTestOracle = async (
     decimals: number, description: string, initAnswer: bigint, intiUpdateAt: number, signer: ethers.Signer

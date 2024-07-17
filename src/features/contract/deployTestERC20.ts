@@ -1,8 +1,8 @@
 import { ethers } from "ethers";
 
-import ITestERC20Data from "../../../artifacts/contracts/token/ITestERC20.sol/ITestERC20.json";
-import TestERC20Data from "../../../artifacts/contracts/token/TestERC20.sol/TestERC20.json";
-import { ITestERC20 } from "../../../typechain-types/contracts/token/ITestERC20";
+import ITestERC20Data from "../../../artifacts/contracts/testnet/token/ITestERC20.sol/ITestERC20.json";
+import TestERC20Data from "../../../artifacts/contracts/testnet/token/TestERC20.sol/TestERC20.json";
+import { ITestERC20 } from "../../../typechain-types/contracts/testnet/token/ITestERC20";
 
 export const deployTestERC20 = async(name: string, sybmol: string, decimals: number, signer: ethers.Signer) => {
 

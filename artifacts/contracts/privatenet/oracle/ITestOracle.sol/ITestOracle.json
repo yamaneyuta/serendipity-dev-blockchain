@@ -1,7 +1,7 @@
 {
   "_format": "hh-sol-artifact-1",
   "contractName": "ITestOracle",
-  "sourceName": "contracts/oracle/ITestOracle.sol",
+  "sourceName": "contracts/privatenet/oracle/ITestOracle.sol",
   "abi": [
     {
       "anonymous": false,
