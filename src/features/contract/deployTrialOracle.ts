@@ -1,21 +1,21 @@
 import { ethers } from "ethers";
-import { ITestOracle } from "../../../typechain-types/contracts/privatenet/oracle/ITestOracle";
+import { ITrialOracleV1 } from "../../../typechain-types/contracts/privatenet/oracle/ITrialOracleV1";
 
-import ITestOracleData from "../../../artifacts/contracts/privatenet/oracle/ITestOracle.sol/ITestOracle.json";
-import TestOracleData from "../../../artifacts/contracts/privatenet/oracle/TestOracle.sol/TestOracle.json";
+import ITrialOracleV1Data from "../../../artifacts/contracts/privatenet/oracle/ITrialOracleV1.sol/ITrialOracleV1.json";
+import TrialOracleV1Data from "../../../artifacts/contracts/privatenet/oracle/TrialOracleV1.sol/TrialOracleV1.json";
 
-export const deployTestOracle = async (
+export const deployTrialOracleV1 = async (
     decimals: number, description: string, initAnswer: bigint, intiUpdateAt: number, signer: ethers.Signer
 ) => {
     // デプロイ実行
-    const factory = createTestOracleFactory().connect(signer);
+    const factory = createTrialOracleV1Factory().connect(signer);
     const contract = await factory.deploy(decimals, description, initAnswer, intiUpdateAt);
     return await contract.waitForDeployment();
 };
 
-const createTestOracleFactory = () => {
-    // const abi = ITestOracleData.abi;
-    const abi = JSON.parse(JSON.stringify(ITestOracleData.abi)) as typeof ITestOracleData.abi;
+const createTrialOracleV1Factory = () => {
+    // const abi = ITrialOracleV1Data.abi;
+    const abi = JSON.parse(JSON.stringify(ITrialOracleV1Data.abi)) as typeof ITrialOracleV1Data.abi;
     (abi as any[]).push({
         "inputs": [
             {
@@ -42,7 +42,7 @@ const createTestOracleFactory = () => {
         "stateMutability": "nonpayable",
         "type": "constructor"
     });
-    const bytecode = TestOracleData.bytecode;
+    const bytecode = TrialOracleV1Data.bytecode;
 
-    return new ethers.ContractFactory<any[], ITestOracle>(abi, bytecode);
+    return new ethers.ContractFactory<any[], ITrialOracleV1>(abi, bytecode);
 }
