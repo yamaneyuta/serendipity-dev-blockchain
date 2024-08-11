@@ -23,7 +23,7 @@ import type {
   TypedContractMethod,
 } from "../../../common";
 
-export interface ITestOracleInterface extends Interface {
+export interface ITrialOracleV1Interface extends Interface {
   getFunction(
     nameOrSignature:
       | "decimals"
@@ -158,11 +158,11 @@ export namespace NewRoundEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
-export interface ITestOracle extends BaseContract {
-  connect(runner?: ContractRunner | null): ITestOracle;
+export interface ITrialOracleV1 extends BaseContract {
+  connect(runner?: ContractRunner | null): ITrialOracleV1;
   waitForDeployment(): Promise<this>;
 
-  interface: ITestOracleInterface;
+  interface: ITrialOracleV1Interface;
 
   queryFilter<TCEvent extends TypedContractEvent>(
     event: TCEvent,
