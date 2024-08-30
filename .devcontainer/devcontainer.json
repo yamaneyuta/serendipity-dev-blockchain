@@ -10,7 +10,7 @@
 		"compose.common.yml",
 		"compose.devcontainer.yml"
 	],
-	// "postCreateCommand": "npm install",
+	"postCreateCommand": "sudo chown -R $(whoami):$(whoami) . && npm install",
 	// "mounts": [
 	// 	// "target=${containerWorkspaceFolder}/node_modules,type=volume"
 	// 	"target=node_modules,type=volume"
@@ -23,7 +23,7 @@
 	// The optional 'workspaceFolder' property is the path VS Code should open by default when
 	// connected. This is typically a file mount in .devcontainer/compose.yml
 	// "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}"
-	"workspaceFolder": "/workspaces"
+	"workspaceFolder": "/workspaces",
 
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	// "features": {},
@@ -44,5 +44,5 @@
 	// "customizations": {},
 
 	// Uncomment to connect as an existing user other than the container default. More info: https://aka.ms/dev-containers-non-root.
-	// "remoteUser": "devcontainer"
+	"remoteUser": "ubuntu"
 }
