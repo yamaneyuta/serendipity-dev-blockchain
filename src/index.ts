@@ -4,6 +4,7 @@ import { createSigner } from "./features/account/createSigner";
 import { deployTrialERC20V1 } from "./features/contract/deployTrialERC20";
 import { deployTrialOracleV1 } from "./features/contract/deployTrialOracle";
 import { waitForNetworkReady } from "./features/network/waitForNetworkReady";
+import { deployAppV1 } from "./features/contract/deployApp";
 
 const HARDHAT_CHAIN_ID = 31337n;
 
@@ -88,6 +89,11 @@ const main = async () => {
 		console.log(`TJPY deployed at ${await tjp.getAddress()}`);
 	}
 
+	// Appコントラクトのデプロイ
+	{
+		const app = await deployAppV1(signer);
+		console.log(`App deployed at ${await app.getAddress()}`);
+	}
 
 	// ダミーアカウントに対して1wei送信することでスマートコントラクトの初期設定が完了した合図とする。
 	const dummyAccount = "0x0000000000000000000000000000000000000001";
