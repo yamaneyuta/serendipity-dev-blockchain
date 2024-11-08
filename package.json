@@ -5,7 +5,7 @@
     "update:package": "npx npm-check-updates -u --target minor",
     "start": "run-p start:*",
     "start:deploy": "ts-node src/index.ts",
-    "start:node": "HARDHAT_PORT=${HARDHAT_PORT:-8545} hardhat node --port ${HARDHAT_PORT}"
+    "start:node": "HARDHAT_PORT=${HARDHAT_PORT:-8545} yes no | hardhat node --port ${HARDHAT_PORT}"
   },
   "dependencies": {
     "@nomicfoundation/hardhat-toolbox": "^5.0.0",
