@@ -95,6 +95,8 @@ const main = async () => {
 		{ from: await signer.getAddress(), to: dummyAccount, value: "0x01" }
 	]);
 	await signer.provider!.waitForTransaction(tx);
+
+	console.log(`Privatenet(${chainId}) is ready!`);
 };
 
 (async () => {
