@@ -1,2 +1,60 @@
 node_modules
 cache/
+
+# artifacts --------------------------------------------------
+artifacts/*
+!artifacts/contracts
+artifacts/contracts/*
+!artifacts/contracts/app
+artifacts/contracts/app/*
+!artifacts/contracts/app/App*.sol
+artifacts/contracts/app/App*.sol/*
+# App*.abi.jsonは管理対象
+!artifacts/contracts/app/App*.sol/App*.abi.json
+# App*.bytecode.jsonは管理対象
+!artifacts/contracts/app/App*.sol/App*.bytecode.json
+!artifacts/contracts/privatenet
+artifacts/contracts/privatenet/*
+!artifacts/contracts/privatenet/oracle
+artifacts/contracts/privatenet/oracle/*
+!artifacts/contracts/privatenet/oracle/TrialOracle*.sol
+artifacts/contracts/privatenet/oracle/TrialOracle*.sol/*
+# TrialOracle*.abi.jsonは管理対象
+!artifacts/contracts/privatenet/oracle/TrialOracle*.sol/TrialOracle*.abi.json
+# TrialOracle*.bytecode.jsonは管理対象
+!artifacts/contracts/privatenet/oracle/TrialOracle*.sol/TrialOracle*.bytecode.json
+!artifacts/contracts/testnet
+artifacts/contracts/testnet/*
+!artifacts/contracts/testnet/token
+artifacts/contracts/testnet/token/*
+!artifacts/contracts/testnet/token/TrialERC20*.sol
+artifacts/contracts/testnet/token/TrialERC20*.sol/*
+# TrialERC20*.abi.jsonは管理対象
+!artifacts/contracts/testnet/token/TrialERC20*.sol/TrialERC20*.abi.json
+# TrialERC20*.bytecode.jsonは管理対象
+!artifacts/contracts/testnet/token/TrialERC20*.sol/TrialERC20*.bytecode.json
+
+
+# typechain-types --------------------------------------------------
+typechain-types/*
+# common.tsは管理対象
+!typechain-types/common.ts
+!typechain-types/contracts
+typechain-types/contracts/*
+!typechain-types/contracts/app
+typechain-types/contracts/app/*
+# App*.tsは管理対象
+!typechain-types/contracts/app/App*.ts
+!typechain-types/contracts/testnet
+typechain-types/contracts/testnet/*
+!typechain-types/contracts/testnet/token
+typechain-types/contracts/testnet/token/*
+# TrialERC20*.tsは管理対象
+!typechain-types/contracts/testnet/token/TrialERC20*.ts
+!typechain-types/contracts/privatenet
+typechain-types/contracts/privatenet/*
+!typechain-types/contracts/privatenet/oracle
+typechain-types/contracts/privatenet/oracle/*
+# TrialOracle*.tsは管理対象
+!typechain-types/contracts/privatenet/oracle/TrialOracle*.ts
+
