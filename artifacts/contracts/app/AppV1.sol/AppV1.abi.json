@@ -1,0 +1,666 @@
+{
+	"abi": [
+		{
+			"inputs": [],
+			"stateMutability": "nonpayable",
+			"type": "constructor"
+		},
+		{
+			"inputs": [],
+			"name": "AlreadyPurchased",
+			"type": "error"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "uint256",
+					"name": "expected",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "actual",
+					"type": "uint256"
+				}
+			],
+			"name": "AmountMismatch",
+			"type": "error"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "account",
+					"type": "address"
+				}
+			],
+			"name": "BlockedAccount",
+			"type": "error"
+		},
+		{
+			"inputs": [],
+			"name": "ContractStatusPaused",
+			"type": "error"
+		},
+		{
+			"inputs": [],
+			"name": "ECDSAInvalidSignature",
+			"type": "error"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "uint256",
+					"name": "length",
+					"type": "uint256"
+				}
+			],
+			"name": "ECDSAInvalidSignatureLength",
+			"type": "error"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "bytes32",
+					"name": "s",
+					"type": "bytes32"
+				}
+			],
+			"name": "ECDSAInvalidSignatureS",
+			"type": "error"
+		},
+		{
+			"inputs": [],
+			"name": "FailedCall",
+			"type": "error"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "uint256",
+					"name": "balance",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "needed",
+					"type": "uint256"
+				}
+			],
+			"name": "InsufficientBalance",
+			"type": "error"
+		},
+		{
+			"inputs": [],
+			"name": "InvalidAccountStatus",
+			"type": "error"
+		},
+		{
+			"inputs": [],
+			"name": "InvalidAffiliateRatio",
+			"type": "error"
+		},
+		{
+			"inputs": [],
+			"name": "InvalidAffiliateTermsMessageHash",
+			"type": "error"
+		},
+		{
+			"inputs": [],
+			"name": "InvalidContractStatus",
+			"type": "error"
+		},
+		{
+			"inputs": [],
+			"name": "InvalidDeployer",
+			"type": "error"
+		},
+		{
+			"inputs": [],
+			"name": "InvalidHandlingFee",
+			"type": "error"
+		},
+		{
+			"inputs": [],
+			"name": "InvalidInitialization",
+			"type": "error"
+		},
+		{
+			"inputs": [],
+			"name": "InvalidSellerTermsMessageHash",
+			"type": "error"
+		},
+		{
+			"inputs": [],
+			"name": "InvalidTokenStatus",
+			"type": "error"
+		},
+		{
+			"inputs": [],
+			"name": "NotInitializing",
+			"type": "error"
+		},
+		{
+			"inputs": [],
+			"name": "ReentrancyGuardReentrantCall",
+			"type": "error"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "account",
+					"type": "address"
+				}
+			],
+			"name": "RoleInvalidAccount",
+			"type": "error"
+		},
+		{
+			"inputs": [],
+			"name": "RoleInvalidRoleValue",
+			"type": "error"
+		},
+		{
+			"inputs": [],
+			"name": "RoleUnauthorized",
+			"type": "error"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "token",
+					"type": "address"
+				}
+			],
+			"name": "SafeERC20FailedOperation",
+			"type": "error"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "uint256",
+					"name": "value",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "length",
+					"type": "uint256"
+				}
+			],
+			"name": "StringsInsufficientHexLength",
+			"type": "error"
+		},
+		{
+			"inputs": [],
+			"name": "TicketExpired",
+			"type": "error"
+		},
+		{
+			"inputs": [],
+			"name": "TokenNotUsable",
+			"type": "error"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": true,
+					"internalType": "address",
+					"name": "signer",
+					"type": "address"
+				},
+				{
+					"indexed": true,
+					"internalType": "address",
+					"name": "from",
+					"type": "address"
+				},
+				{
+					"indexed": true,
+					"internalType": "address",
+					"name": "to",
+					"type": "address"
+				},
+				{
+					"indexed": false,
+					"internalType": "uint256",
+					"name": "ticketID",
+					"type": "uint256"
+				},
+				{
+					"indexed": false,
+					"internalType": "address",
+					"name": "token",
+					"type": "address"
+				},
+				{
+					"indexed": false,
+					"internalType": "uint256",
+					"name": "amount",
+					"type": "uint256"
+				},
+				{
+					"indexed": false,
+					"internalType": "uint256",
+					"name": "transferType",
+					"type": "uint256"
+				}
+			],
+			"name": "EffectivelyTransfer",
+			"type": "event"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": false,
+					"internalType": "uint64",
+					"name": "version",
+					"type": "uint64"
+				}
+			],
+			"name": "Initialized",
+			"type": "event"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": true,
+					"internalType": "address",
+					"name": "signer",
+					"type": "address"
+				},
+				{
+					"indexed": false,
+					"internalType": "address",
+					"name": "customer",
+					"type": "address"
+				},
+				{
+					"indexed": false,
+					"internalType": "uint256",
+					"name": "ticketID",
+					"type": "uint256"
+				},
+				{
+					"indexed": false,
+					"internalType": "address",
+					"name": "token",
+					"type": "address"
+				},
+				{
+					"indexed": false,
+					"internalType": "uint256",
+					"name": "paymentAmount",
+					"type": "uint256"
+				}
+			],
+			"name": "Pay",
+			"type": "event"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": true,
+					"internalType": "address",
+					"name": "account",
+					"type": "address"
+				},
+				{
+					"indexed": false,
+					"internalType": "uint256",
+					"name": "previousStatus",
+					"type": "uint256"
+				},
+				{
+					"indexed": false,
+					"internalType": "uint256",
+					"name": "newStatus",
+					"type": "uint256"
+				}
+			],
+			"name": "SetAccountStatus",
+			"type": "event"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": false,
+					"internalType": "uint256",
+					"name": "previousStatus",
+					"type": "uint256"
+				},
+				{
+					"indexed": false,
+					"internalType": "uint256",
+					"name": "newStatus",
+					"type": "uint256"
+				}
+			],
+			"name": "SetContractStatus",
+			"type": "event"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": false,
+					"internalType": "uint256",
+					"name": "previousHandlingFeeRatio",
+					"type": "uint256"
+				},
+				{
+					"indexed": false,
+					"internalType": "uint256",
+					"name": "newHandlingFeeRatio",
+					"type": "uint256"
+				}
+			],
+			"name": "SetPriceCalculator",
+			"type": "event"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": true,
+					"internalType": "address",
+					"name": "account",
+					"type": "address"
+				},
+				{
+					"indexed": false,
+					"internalType": "uint256",
+					"name": "previousRole",
+					"type": "uint256"
+				},
+				{
+					"indexed": false,
+					"internalType": "uint256",
+					"name": "newRole",
+					"type": "uint256"
+				}
+			],
+			"name": "SetRole",
+			"type": "event"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": false,
+					"internalType": "uint256",
+					"name": "previousExpiration",
+					"type": "uint256"
+				},
+				{
+					"indexed": false,
+					"internalType": "uint256",
+					"name": "newExpiration",
+					"type": "uint256"
+				}
+			],
+			"name": "SetTicketExpiration",
+			"type": "event"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": true,
+					"internalType": "address",
+					"name": "token",
+					"type": "address"
+				},
+				{
+					"indexed": false,
+					"internalType": "uint256",
+					"name": "previousStatus",
+					"type": "uint256"
+				},
+				{
+					"indexed": false,
+					"internalType": "uint256",
+					"name": "newStatus",
+					"type": "uint256"
+				}
+			],
+			"name": "SetTokenStatus",
+			"type": "event"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "signer",
+					"type": "address"
+				},
+				{
+					"internalType": "uint64",
+					"name": "postID",
+					"type": "uint64"
+				},
+				{
+					"internalType": "address",
+					"name": "purchaser",
+					"type": "address"
+				}
+			],
+			"name": "getPostPurchasedData",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "initialAdmin",
+					"type": "address"
+				}
+			],
+			"name": "initialize",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "bytes",
+					"name": "serverSignature",
+					"type": "bytes"
+				},
+				{
+					"internalType": "bytes32",
+					"name": "sellerTermsMessageHash",
+					"type": "bytes32"
+				},
+				{
+					"internalType": "bytes",
+					"name": "sellerTermsSignature",
+					"type": "bytes"
+				},
+				{
+					"internalType": "uint256",
+					"name": "buyerSignatureVersion",
+					"type": "uint256"
+				},
+				{
+					"internalType": "bytes32",
+					"name": "affiliateTermsMessageHash",
+					"type": "bytes32"
+				},
+				{
+					"internalType": "bytes",
+					"name": "affiliateTermsSignature",
+					"type": "bytes"
+				},
+				{
+					"internalType": "uint128",
+					"name": "purchaseTicketID",
+					"type": "uint128"
+				},
+				{
+					"internalType": "uint64",
+					"name": "postID",
+					"type": "uint64"
+				},
+				{
+					"internalType": "address",
+					"name": "paymentToken",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "paymentAmount",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "affiliateRatio",
+					"type": "uint256"
+				}
+			],
+			"name": "pay",
+			"outputs": [],
+			"stateMutability": "payable",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "account",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "status",
+					"type": "uint256"
+				}
+			],
+			"name": "setAccountStatus",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "uint256",
+					"name": "status",
+					"type": "uint256"
+				}
+			],
+			"name": "setContractStatus",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "account",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "role",
+					"type": "uint256"
+				}
+			],
+			"name": "setRole",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "uint256",
+					"name": "expiration",
+					"type": "uint256"
+				}
+			],
+			"name": "setTicketExpiration",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "token",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "status",
+					"type": "uint256"
+				}
+			],
+			"name": "setTokenStatus",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [],
+			"name": "upgrade",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [],
+			"name": "version",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "address payable",
+					"name": "to",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "contractAddress",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "amount",
+					"type": "uint256"
+				}
+			],
+			"name": "withdraw",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		}
+	]
+}
