@@ -26,13 +26,14 @@ import type {
 export interface AppV1Interface extends Interface {
   getFunction(
     nameOrSignature:
+      | "createServerMessage"
       | "getPostPurchasedData"
       | "initialize"
       | "pay"
       | "setAccountStatus"
       | "setContractStatus"
+      | "setInvoiceExpiration"
       | "setRole"
-      | "setTicketExpiration"
       | "setTokenStatus"
       | "upgrade"
       | "version"
@@ -46,12 +47,26 @@ export interface AppV1Interface extends Interface {
       | "Pay"
       | "SetAccountStatus"
       | "SetContractStatus"
+      | "SetInvoiceExpiration"
       | "SetPriceCalculator"
       | "SetRole"
-      | "SetTicketExpiration"
       | "SetTokenStatus"
   ): EventFragment;
 
+  encodeFunctionData(
+    functionFragment: "createServerMessage",
+    values: [
+      AddressLike,
+      AddressLike,
+      BigNumberish,
+      BigNumberish,
+      AddressLike,
+      BigNumberish,
+      BigNumberish,
+      AddressLike,
+      BigNumberish
+    ]
+  ): string;
   encodeFunctionData(
     functionFragment: "getPostPurchasedData",
     values: [AddressLike, BigNumberish, AddressLike]
@@ -85,12 +100,12 @@ export interface AppV1Interface extends Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "setRole",
-    values: [AddressLike, BigNumberish]
+    functionFragment: "setInvoiceExpiration",
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "setTicketExpiration",
-    values: [BigNumberish]
+    functionFragment: "setRole",
+    values: [AddressLike, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "setTokenStatus",
@@ -103,6 +118,10 @@ export interface AppV1Interface extends Interface {
     values: [AddressLike, AddressLike, BigNumberish]
   ): string;
 
+  decodeFunctionResult(
+    functionFragment: "createServerMessage",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "getPostPurchasedData",
     data: BytesLike
@@ -117,11 +136,11 @@ export interface AppV1Interface extends Interface {
     functionFragment: "setContractStatus",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "setRole", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "setTicketExpiration",
+    functionFragment: "setInvoiceExpiration",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "setRole", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "setTokenStatus",
     data: BytesLike
@@ -136,7 +155,7 @@ export namespace EffectivelyTransferEvent {
     signer: AddressLike,
     from: AddressLike,
     to: AddressLike,
-    ticketID: BigNumberish,
+    invoiceID: BigNumberish,
     token: AddressLike,
     amount: BigNumberish,
     transferType: BigNumberish
@@ -145,7 +164,7 @@ export namespace EffectivelyTransferEvent {
     signer: string,
     from: string,
     to: string,
-    ticketID: bigint,
+    invoiceID: bigint,
     token: string,
     amount: bigint,
     transferType: bigint
@@ -154,7 +173,7 @@ export namespace EffectivelyTransferEvent {
     signer: string;
     from: string;
     to: string;
-    ticketID: bigint;
+    invoiceID: bigint;
     token: string;
     amount: bigint;
     transferType: bigint;
@@ -181,21 +200,21 @@ export namespace PayEvent {
   export type InputTuple = [
     signer: AddressLike,
     customer: AddressLike,
-    ticketID: BigNumberish,
+    invoiceID: BigNumberish,
     token: AddressLike,
     paymentAmount: BigNumberish
   ];
   export type OutputTuple = [
     signer: string,
     customer: string,
-    ticketID: bigint,
+    invoiceID: bigint,
     token: string,
     paymentAmount: bigint
   ];
   export interface OutputObject {
     signer: string;
     customer: string;
-    ticketID: bigint;
+    invoiceID: bigint;
     token: string;
     paymentAmount: bigint;
   }
@@ -243,6 +262,22 @@ export namespace SetContractStatusEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
+export namespace SetInvoiceExpirationEvent {
+  export type InputTuple = [
+    previousExpiration: BigNumberish,
+    newExpiration: BigNumberish
+  ];
+  export type OutputTuple = [previousExpiration: bigint, newExpiration: bigint];
+  export interface OutputObject {
+    previousExpiration: bigint;
+    newExpiration: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
 export namespace SetPriceCalculatorEvent {
   export type InputTuple = [
     previousHandlingFeeRatio: BigNumberish,
@@ -277,22 +312,6 @@ export namespace SetRoleEvent {
     account: string;
     previousRole: bigint;
     newRole: bigint;
-  }
-  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
-  export type Filter = TypedDeferredTopicFilter<Event>;
-  export type Log = TypedEventLog<Event>;
-  export type LogDescription = TypedLogDescription<Event>;
-}
-
-export namespace SetTicketExpirationEvent {
-  export type InputTuple = [
-    previousExpiration: BigNumberish,
-    newExpiration: BigNumberish
-  ];
-  export type OutputTuple = [previousExpiration: bigint, newExpiration: bigint];
-  export interface OutputObject {
-    previousExpiration: bigint;
-    newExpiration: bigint;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -365,6 +384,22 @@ export interface AppV1 extends BaseContract {
     event?: TCEvent
   ): Promise<this>;
 
+  createServerMessage: TypedContractMethod<
+    [
+      seller: AddressLike,
+      consumer: AddressLike,
+      invoiceID: BigNumberish,
+      postID: BigNumberish,
+      paymentToken: AddressLike,
+      paymentAmount: BigNumberish,
+      buyerSignatureVersion: BigNumberish,
+      affiliate: AddressLike,
+      affiliateRatio: BigNumberish
+    ],
+    [string],
+    "view"
+  >;
+
   getPostPurchasedData: TypedContractMethod<
     [signer: AddressLike, postID: BigNumberish, purchaser: AddressLike],
     [bigint],
@@ -385,7 +420,7 @@ export interface AppV1 extends BaseContract {
       buyerSignatureVersion: BigNumberish,
       affiliateTermsMessageHash: BytesLike,
       affiliateTermsSignature: BytesLike,
-      purchaseTicketID: BigNumberish,
+      invoiceID: BigNumberish,
       postID: BigNumberish,
       paymentToken: AddressLike,
       paymentAmount: BigNumberish,
@@ -407,14 +442,14 @@ export interface AppV1 extends BaseContract {
     "nonpayable"
   >;
 
-  setRole: TypedContractMethod<
-    [account: AddressLike, role: BigNumberish],
+  setInvoiceExpiration: TypedContractMethod<
+    [expiration: BigNumberish],
     [void],
     "nonpayable"
   >;
 
-  setTicketExpiration: TypedContractMethod<
-    [expiration: BigNumberish],
+  setRole: TypedContractMethod<
+    [account: AddressLike, role: BigNumberish],
     [void],
     "nonpayable"
   >;
@@ -440,6 +475,23 @@ export interface AppV1 extends BaseContract {
   ): T;
 
   getFunction(
+    nameOrSignature: "createServerMessage"
+  ): TypedContractMethod<
+    [
+      seller: AddressLike,
+      consumer: AddressLike,
+      invoiceID: BigNumberish,
+      postID: BigNumberish,
+      paymentToken: AddressLike,
+      paymentAmount: BigNumberish,
+      buyerSignatureVersion: BigNumberish,
+      affiliate: AddressLike,
+      affiliateRatio: BigNumberish
+    ],
+    [string],
+    "view"
+  >;
+  getFunction(
     nameOrSignature: "getPostPurchasedData"
   ): TypedContractMethod<
     [signer: AddressLike, postID: BigNumberish, purchaser: AddressLike],
@@ -459,7 +511,7 @@ export interface AppV1 extends BaseContract {
       buyerSignatureVersion: BigNumberish,
       affiliateTermsMessageHash: BytesLike,
       affiliateTermsSignature: BytesLike,
-      purchaseTicketID: BigNumberish,
+      invoiceID: BigNumberish,
       postID: BigNumberish,
       paymentToken: AddressLike,
       paymentAmount: BigNumberish,
@@ -479,15 +531,15 @@ export interface AppV1 extends BaseContract {
     nameOrSignature: "setContractStatus"
   ): TypedContractMethod<[status: BigNumberish], [void], "nonpayable">;
   getFunction(
+    nameOrSignature: "setInvoiceExpiration"
+  ): TypedContractMethod<[expiration: BigNumberish], [void], "nonpayable">;
+  getFunction(
     nameOrSignature: "setRole"
   ): TypedContractMethod<
     [account: AddressLike, role: BigNumberish],
     [void],
     "nonpayable"
   >;
-  getFunction(
-    nameOrSignature: "setTicketExpiration"
-  ): TypedContractMethod<[expiration: BigNumberish], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "setTokenStatus"
   ): TypedContractMethod<
@@ -545,6 +597,13 @@ export interface AppV1 extends BaseContract {
     SetContractStatusEvent.OutputObject
   >;
   getEvent(
+    key: "SetInvoiceExpiration"
+  ): TypedContractEvent<
+    SetInvoiceExpirationEvent.InputTuple,
+    SetInvoiceExpirationEvent.OutputTuple,
+    SetInvoiceExpirationEvent.OutputObject
+  >;
+  getEvent(
     key: "SetPriceCalculator"
   ): TypedContractEvent<
     SetPriceCalculatorEvent.InputTuple,
@@ -557,13 +616,6 @@ export interface AppV1 extends BaseContract {
     SetRoleEvent.InputTuple,
     SetRoleEvent.OutputTuple,
     SetRoleEvent.OutputObject
-  >;
-  getEvent(
-    key: "SetTicketExpiration"
-  ): TypedContractEvent<
-    SetTicketExpirationEvent.InputTuple,
-    SetTicketExpirationEvent.OutputTuple,
-    SetTicketExpirationEvent.OutputObject
   >;
   getEvent(
     key: "SetTokenStatus"
@@ -629,6 +681,17 @@ export interface AppV1 extends BaseContract {
       SetContractStatusEvent.OutputObject
     >;
 
+    "SetInvoiceExpiration(uint256,uint256)": TypedContractEvent<
+      SetInvoiceExpirationEvent.InputTuple,
+      SetInvoiceExpirationEvent.OutputTuple,
+      SetInvoiceExpirationEvent.OutputObject
+    >;
+    SetInvoiceExpiration: TypedContractEvent<
+      SetInvoiceExpirationEvent.InputTuple,
+      SetInvoiceExpirationEvent.OutputTuple,
+      SetInvoiceExpirationEvent.OutputObject
+    >;
+
     "SetPriceCalculator(uint256,uint256)": TypedContractEvent<
       SetPriceCalculatorEvent.InputTuple,
       SetPriceCalculatorEvent.OutputTuple,
@@ -649,17 +712,6 @@ export interface AppV1 extends BaseContract {
       SetRoleEvent.InputTuple,
       SetRoleEvent.OutputTuple,
       SetRoleEvent.OutputObject
-    >;
-
-    "SetTicketExpiration(uint256,uint256)": TypedContractEvent<
-      SetTicketExpirationEvent.InputTuple,
-      SetTicketExpirationEvent.OutputTuple,
-      SetTicketExpirationEvent.OutputObject
-    >;
-    SetTicketExpiration: TypedContractEvent<
-      SetTicketExpirationEvent.InputTuple,
-      SetTicketExpirationEvent.OutputTuple,
-      SetTicketExpirationEvent.OutputObject
     >;
 
     "SetTokenStatus(address,uint256,uint256)": TypedContractEvent<

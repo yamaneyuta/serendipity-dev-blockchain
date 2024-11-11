@@ -165,6 +165,11 @@
 		},
 		{
 			"inputs": [],
+			"name": "InvoiceExpired",
+			"type": "error"
+		},
+		{
+			"inputs": [],
 			"name": "NotInitializing",
 			"type": "error"
 		},
@@ -223,11 +228,6 @@
 		},
 		{
 			"inputs": [],
-			"name": "TicketExpired",
-			"type": "error"
-		},
-		{
-			"inputs": [],
 			"name": "TokenNotUsable",
 			"type": "error"
 		},
@@ -255,7 +255,7 @@
 				{
 					"indexed": false,
 					"internalType": "uint256",
-					"name": "ticketID",
+					"name": "invoiceID",
 					"type": "uint256"
 				},
 				{
@@ -311,7 +311,7 @@
 				{
 					"indexed": false,
 					"internalType": "uint256",
-					"name": "ticketID",
+					"name": "invoiceID",
 					"type": "uint256"
 				},
 				{
@@ -380,6 +380,25 @@
 				{
 					"indexed": false,
 					"internalType": "uint256",
+					"name": "previousExpiration",
+					"type": "uint256"
+				},
+				{
+					"indexed": false,
+					"internalType": "uint256",
+					"name": "newExpiration",
+					"type": "uint256"
+				}
+			],
+			"name": "SetInvoiceExpiration",
+			"type": "event"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": false,
+					"internalType": "uint256",
 					"name": "previousHandlingFeeRatio",
 					"type": "uint256"
 				},
@@ -422,25 +441,6 @@
 			"anonymous": false,
 			"inputs": [
 				{
-					"indexed": false,
-					"internalType": "uint256",
-					"name": "previousExpiration",
-					"type": "uint256"
-				},
-				{
-					"indexed": false,
-					"internalType": "uint256",
-					"name": "newExpiration",
-					"type": "uint256"
-				}
-			],
-			"name": "SetTicketExpiration",
-			"type": "event"
-		},
-		{
-			"anonymous": false,
-			"inputs": [
-				{
 					"indexed": true,
 					"internalType": "address",
 					"name": "token",
@@ -461,6 +461,65 @@
 			],
 			"name": "SetTokenStatus",
 			"type": "event"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "seller",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "consumer",
+					"type": "address"
+				},
+				{
+					"internalType": "uint128",
+					"name": "invoiceID",
+					"type": "uint128"
+				},
+				{
+					"internalType": "uint64",
+					"name": "postID",
+					"type": "uint64"
+				},
+				{
+					"internalType": "address",
+					"name": "paymentToken",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "paymentAmount",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "buyerSignatureVersion",
+					"type": "uint256"
+				},
+				{
+					"internalType": "address",
+					"name": "affiliate",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "affiliateRatio",
+					"type": "uint256"
+				}
+			],
+			"name": "createServerMessage",
+			"outputs": [
+				{
+					"internalType": "string",
+					"name": "",
+					"type": "string"
+				}
+			],
+			"stateMutability": "view",
+			"type": "function"
 		},
 		{
 			"inputs": [
@@ -538,7 +597,7 @@
 				},
 				{
 					"internalType": "uint128",
-					"name": "purchaseTicketID",
+					"name": "invoiceID",
 					"type": "uint128"
 				},
 				{
@@ -601,6 +660,19 @@
 		{
 			"inputs": [
 				{
+					"internalType": "uint256",
+					"name": "expiration",
+					"type": "uint256"
+				}
+			],
+			"name": "setInvoiceExpiration",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
 					"internalType": "address",
 					"name": "account",
 					"type": "address"
@@ -612,19 +684,6 @@
 				}
 			],
 			"name": "setRole",
-			"outputs": [],
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"inputs": [
-				{
-					"internalType": "uint256",
-					"name": "expiration",
-					"type": "uint256"
-				}
-			],
-			"name": "setTicketExpiration",
 			"outputs": [],
 			"stateMutability": "nonpayable",
 			"type": "function"
