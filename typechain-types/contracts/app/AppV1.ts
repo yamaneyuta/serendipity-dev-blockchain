@@ -27,14 +27,14 @@ export interface AppV1Interface extends Interface {
   getFunction(
     nameOrSignature:
       | "createServerMessage"
-      | "getPostPurchasedData"
+      | "getPaywallStatus"
       | "initialize"
-      | "pay"
       | "setAccountStatus"
       | "setContractStatus"
       | "setInvoiceExpiration"
       | "setRole"
       | "setTokenStatus"
+      | "unlockPaywall"
       | "upgrade"
       | "version"
       | "withdraw"
@@ -44,13 +44,13 @@ export interface AppV1Interface extends Interface {
     nameOrSignatureOrTopic:
       | "EffectivelyTransfer"
       | "Initialized"
-      | "Pay"
       | "SetAccountStatus"
       | "SetContractStatus"
+      | "SetHandlingFeeRatio"
       | "SetInvoiceExpiration"
-      | "SetPriceCalculator"
       | "SetRole"
       | "SetTokenStatus"
+      | "UnlockPaywall"
   ): EventFragment;
 
   encodeFunctionData(
@@ -68,28 +68,12 @@ export interface AppV1Interface extends Interface {
     ]
   ): string;
   encodeFunctionData(
-    functionFragment: "getPostPurchasedData",
+    functionFragment: "getPaywallStatus",
     values: [AddressLike, BigNumberish, AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: "initialize",
     values: [AddressLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "pay",
-    values: [
-      BytesLike,
-      BytesLike,
-      BytesLike,
-      BigNumberish,
-      BytesLike,
-      BytesLike,
-      BigNumberish,
-      BigNumberish,
-      AddressLike,
-      BigNumberish,
-      BigNumberish
-    ]
   ): string;
   encodeFunctionData(
     functionFragment: "setAccountStatus",
@@ -111,6 +95,22 @@ export interface AppV1Interface extends Interface {
     functionFragment: "setTokenStatus",
     values: [AddressLike, BigNumberish]
   ): string;
+  encodeFunctionData(
+    functionFragment: "unlockPaywall",
+    values: [
+      BytesLike,
+      BytesLike,
+      BytesLike,
+      BigNumberish,
+      BytesLike,
+      BytesLike,
+      BigNumberish,
+      BigNumberish,
+      AddressLike,
+      BigNumberish,
+      BigNumberish
+    ]
+  ): string;
   encodeFunctionData(functionFragment: "upgrade", values?: undefined): string;
   encodeFunctionData(functionFragment: "version", values?: undefined): string;
   encodeFunctionData(
@@ -123,11 +123,10 @@ export interface AppV1Interface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getPostPurchasedData",
+    functionFragment: "getPaywallStatus",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "pay", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "setAccountStatus",
     data: BytesLike
@@ -145,6 +144,10 @@ export interface AppV1Interface extends Interface {
     functionFragment: "setTokenStatus",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "unlockPaywall",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "upgrade", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "version", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "withdraw", data: BytesLike): Result;
@@ -152,31 +155,22 @@ export interface AppV1Interface extends Interface {
 
 export namespace EffectivelyTransferEvent {
   export type InputTuple = [
-    signer: AddressLike,
     from: AddressLike,
     to: AddressLike,
-    invoiceID: BigNumberish,
     token: AddressLike,
-    amount: BigNumberish,
-    transferType: BigNumberish
+    amount: BigNumberish
   ];
   export type OutputTuple = [
-    signer: string,
     from: string,
     to: string,
-    invoiceID: bigint,
     token: string,
-    amount: bigint,
-    transferType: bigint
+    amount: bigint
   ];
   export interface OutputObject {
-    signer: string;
     from: string;
     to: string;
-    invoiceID: bigint;
     token: string;
     amount: bigint;
-    transferType: bigint;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -189,34 +183,6 @@ export namespace InitializedEvent {
   export type OutputTuple = [version: bigint];
   export interface OutputObject {
     version: bigint;
-  }
-  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
-  export type Filter = TypedDeferredTopicFilter<Event>;
-  export type Log = TypedEventLog<Event>;
-  export type LogDescription = TypedLogDescription<Event>;
-}
-
-export namespace PayEvent {
-  export type InputTuple = [
-    signer: AddressLike,
-    customer: AddressLike,
-    invoiceID: BigNumberish,
-    token: AddressLike,
-    paymentAmount: BigNumberish
-  ];
-  export type OutputTuple = [
-    signer: string,
-    customer: string,
-    invoiceID: bigint,
-    token: string,
-    paymentAmount: bigint
-  ];
-  export interface OutputObject {
-    signer: string;
-    customer: string;
-    invoiceID: bigint;
-    token: string;
-    paymentAmount: bigint;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -262,23 +228,7 @@ export namespace SetContractStatusEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
-export namespace SetInvoiceExpirationEvent {
-  export type InputTuple = [
-    previousExpiration: BigNumberish,
-    newExpiration: BigNumberish
-  ];
-  export type OutputTuple = [previousExpiration: bigint, newExpiration: bigint];
-  export interface OutputObject {
-    previousExpiration: bigint;
-    newExpiration: bigint;
-  }
-  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
-  export type Filter = TypedDeferredTopicFilter<Event>;
-  export type Log = TypedEventLog<Event>;
-  export type LogDescription = TypedLogDescription<Event>;
-}
-
-export namespace SetPriceCalculatorEvent {
+export namespace SetHandlingFeeRatioEvent {
   export type InputTuple = [
     previousHandlingFeeRatio: BigNumberish,
     newHandlingFeeRatio: BigNumberish
@@ -290,6 +240,22 @@ export namespace SetPriceCalculatorEvent {
   export interface OutputObject {
     previousHandlingFeeRatio: bigint;
     newHandlingFeeRatio: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace SetInvoiceExpirationEvent {
+  export type InputTuple = [
+    previousExpiration: BigNumberish,
+    newExpiration: BigNumberish
+  ];
+  export type OutputTuple = [previousExpiration: bigint, newExpiration: bigint];
+  export interface OutputObject {
+    previousExpiration: bigint;
+    newExpiration: bigint;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -334,6 +300,31 @@ export namespace SetTokenStatusEvent {
     token: string;
     previousStatus: bigint;
     newStatus: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace UnlockPaywallEvent {
+  export type InputTuple = [
+    account: AddressLike,
+    signer: AddressLike,
+    postID: BigNumberish,
+    consumer: AddressLike
+  ];
+  export type OutputTuple = [
+    account: string,
+    signer: string,
+    postID: bigint,
+    consumer: string
+  ];
+  export interface OutputObject {
+    account: string;
+    signer: string;
+    postID: bigint;
+    consumer: string;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -392,7 +383,7 @@ export interface AppV1 extends BaseContract {
       postID: BigNumberish,
       paymentToken: AddressLike,
       paymentAmount: BigNumberish,
-      buyerSignatureVersion: BigNumberish,
+      consumerSignatureVersion: BigNumberish,
       affiliate: AddressLike,
       affiliateRatio: BigNumberish
     ],
@@ -400,9 +391,15 @@ export interface AppV1 extends BaseContract {
     "view"
   >;
 
-  getPostPurchasedData: TypedContractMethod<
-    [signer: AddressLike, postID: BigNumberish, purchaser: AddressLike],
-    [bigint],
+  getPaywallStatus: TypedContractMethod<
+    [signer: AddressLike, postID: BigNumberish, consumer: AddressLike],
+    [
+      [boolean, bigint, bigint] & {
+        isUnlocked: boolean;
+        invoiceID: bigint;
+        unlockedBlockNumber: bigint;
+      }
+    ],
     "view"
   >;
 
@@ -410,24 +407,6 @@ export interface AppV1 extends BaseContract {
     [initialAdmin: AddressLike],
     [void],
     "nonpayable"
-  >;
-
-  pay: TypedContractMethod<
-    [
-      serverSignature: BytesLike,
-      sellerTermsMessageHash: BytesLike,
-      sellerTermsSignature: BytesLike,
-      buyerSignatureVersion: BigNumberish,
-      affiliateTermsMessageHash: BytesLike,
-      affiliateTermsSignature: BytesLike,
-      invoiceID: BigNumberish,
-      postID: BigNumberish,
-      paymentToken: AddressLike,
-      paymentAmount: BigNumberish,
-      affiliateRatio: BigNumberish
-    ],
-    [void],
-    "payable"
   >;
 
   setAccountStatus: TypedContractMethod<
@@ -460,6 +439,24 @@ export interface AppV1 extends BaseContract {
     "nonpayable"
   >;
 
+  unlockPaywall: TypedContractMethod<
+    [
+      serverSignature: BytesLike,
+      sellerTermsMessageHash: BytesLike,
+      sellerTermsSignature: BytesLike,
+      consumerSignatureVersion: BigNumberish,
+      affiliateTermsMessageHash: BytesLike,
+      affiliateTermsSignature: BytesLike,
+      invoiceID: BigNumberish,
+      postID: BigNumberish,
+      paymentToken: AddressLike,
+      paymentAmount: BigNumberish,
+      affiliateRatio: BigNumberish
+    ],
+    [void],
+    "payable"
+  >;
+
   upgrade: TypedContractMethod<[], [void], "nonpayable">;
 
   version: TypedContractMethod<[], [bigint], "view">;
@@ -484,7 +481,7 @@ export interface AppV1 extends BaseContract {
       postID: BigNumberish,
       paymentToken: AddressLike,
       paymentAmount: BigNumberish,
-      buyerSignatureVersion: BigNumberish,
+      consumerSignatureVersion: BigNumberish,
       affiliate: AddressLike,
       affiliateRatio: BigNumberish
     ],
@@ -492,34 +489,21 @@ export interface AppV1 extends BaseContract {
     "view"
   >;
   getFunction(
-    nameOrSignature: "getPostPurchasedData"
+    nameOrSignature: "getPaywallStatus"
   ): TypedContractMethod<
-    [signer: AddressLike, postID: BigNumberish, purchaser: AddressLike],
-    [bigint],
+    [signer: AddressLike, postID: BigNumberish, consumer: AddressLike],
+    [
+      [boolean, bigint, bigint] & {
+        isUnlocked: boolean;
+        invoiceID: bigint;
+        unlockedBlockNumber: bigint;
+      }
+    ],
     "view"
   >;
   getFunction(
     nameOrSignature: "initialize"
   ): TypedContractMethod<[initialAdmin: AddressLike], [void], "nonpayable">;
-  getFunction(
-    nameOrSignature: "pay"
-  ): TypedContractMethod<
-    [
-      serverSignature: BytesLike,
-      sellerTermsMessageHash: BytesLike,
-      sellerTermsSignature: BytesLike,
-      buyerSignatureVersion: BigNumberish,
-      affiliateTermsMessageHash: BytesLike,
-      affiliateTermsSignature: BytesLike,
-      invoiceID: BigNumberish,
-      postID: BigNumberish,
-      paymentToken: AddressLike,
-      paymentAmount: BigNumberish,
-      affiliateRatio: BigNumberish
-    ],
-    [void],
-    "payable"
-  >;
   getFunction(
     nameOrSignature: "setAccountStatus"
   ): TypedContractMethod<
@@ -546,6 +530,25 @@ export interface AppV1 extends BaseContract {
     [token: AddressLike, status: BigNumberish],
     [void],
     "nonpayable"
+  >;
+  getFunction(
+    nameOrSignature: "unlockPaywall"
+  ): TypedContractMethod<
+    [
+      serverSignature: BytesLike,
+      sellerTermsMessageHash: BytesLike,
+      sellerTermsSignature: BytesLike,
+      consumerSignatureVersion: BigNumberish,
+      affiliateTermsMessageHash: BytesLike,
+      affiliateTermsSignature: BytesLike,
+      invoiceID: BigNumberish,
+      postID: BigNumberish,
+      paymentToken: AddressLike,
+      paymentAmount: BigNumberish,
+      affiliateRatio: BigNumberish
+    ],
+    [void],
+    "payable"
   >;
   getFunction(
     nameOrSignature: "upgrade"
@@ -576,13 +579,6 @@ export interface AppV1 extends BaseContract {
     InitializedEvent.OutputObject
   >;
   getEvent(
-    key: "Pay"
-  ): TypedContractEvent<
-    PayEvent.InputTuple,
-    PayEvent.OutputTuple,
-    PayEvent.OutputObject
-  >;
-  getEvent(
     key: "SetAccountStatus"
   ): TypedContractEvent<
     SetAccountStatusEvent.InputTuple,
@@ -597,18 +593,18 @@ export interface AppV1 extends BaseContract {
     SetContractStatusEvent.OutputObject
   >;
   getEvent(
+    key: "SetHandlingFeeRatio"
+  ): TypedContractEvent<
+    SetHandlingFeeRatioEvent.InputTuple,
+    SetHandlingFeeRatioEvent.OutputTuple,
+    SetHandlingFeeRatioEvent.OutputObject
+  >;
+  getEvent(
     key: "SetInvoiceExpiration"
   ): TypedContractEvent<
     SetInvoiceExpirationEvent.InputTuple,
     SetInvoiceExpirationEvent.OutputTuple,
     SetInvoiceExpirationEvent.OutputObject
-  >;
-  getEvent(
-    key: "SetPriceCalculator"
-  ): TypedContractEvent<
-    SetPriceCalculatorEvent.InputTuple,
-    SetPriceCalculatorEvent.OutputTuple,
-    SetPriceCalculatorEvent.OutputObject
   >;
   getEvent(
     key: "SetRole"
@@ -624,9 +620,16 @@ export interface AppV1 extends BaseContract {
     SetTokenStatusEvent.OutputTuple,
     SetTokenStatusEvent.OutputObject
   >;
+  getEvent(
+    key: "UnlockPaywall"
+  ): TypedContractEvent<
+    UnlockPaywallEvent.InputTuple,
+    UnlockPaywallEvent.OutputTuple,
+    UnlockPaywallEvent.OutputObject
+  >;
 
   filters: {
-    "EffectivelyTransfer(address,address,address,uint256,address,uint256,uint256)": TypedContractEvent<
+    "EffectivelyTransfer(address,address,address,uint256)": TypedContractEvent<
       EffectivelyTransferEvent.InputTuple,
       EffectivelyTransferEvent.OutputTuple,
       EffectivelyTransferEvent.OutputObject
@@ -646,17 +649,6 @@ export interface AppV1 extends BaseContract {
       InitializedEvent.InputTuple,
       InitializedEvent.OutputTuple,
       InitializedEvent.OutputObject
-    >;
-
-    "Pay(address,address,uint256,address,uint256)": TypedContractEvent<
-      PayEvent.InputTuple,
-      PayEvent.OutputTuple,
-      PayEvent.OutputObject
-    >;
-    Pay: TypedContractEvent<
-      PayEvent.InputTuple,
-      PayEvent.OutputTuple,
-      PayEvent.OutputObject
     >;
 
     "SetAccountStatus(address,uint256,uint256)": TypedContractEvent<
@@ -681,6 +673,17 @@ export interface AppV1 extends BaseContract {
       SetContractStatusEvent.OutputObject
     >;
 
+    "SetHandlingFeeRatio(uint256,uint256)": TypedContractEvent<
+      SetHandlingFeeRatioEvent.InputTuple,
+      SetHandlingFeeRatioEvent.OutputTuple,
+      SetHandlingFeeRatioEvent.OutputObject
+    >;
+    SetHandlingFeeRatio: TypedContractEvent<
+      SetHandlingFeeRatioEvent.InputTuple,
+      SetHandlingFeeRatioEvent.OutputTuple,
+      SetHandlingFeeRatioEvent.OutputObject
+    >;
+
     "SetInvoiceExpiration(uint256,uint256)": TypedContractEvent<
       SetInvoiceExpirationEvent.InputTuple,
       SetInvoiceExpirationEvent.OutputTuple,
@@ -690,17 +693,6 @@ export interface AppV1 extends BaseContract {
       SetInvoiceExpirationEvent.InputTuple,
       SetInvoiceExpirationEvent.OutputTuple,
       SetInvoiceExpirationEvent.OutputObject
-    >;
-
-    "SetPriceCalculator(uint256,uint256)": TypedContractEvent<
-      SetPriceCalculatorEvent.InputTuple,
-      SetPriceCalculatorEvent.OutputTuple,
-      SetPriceCalculatorEvent.OutputObject
-    >;
-    SetPriceCalculator: TypedContractEvent<
-      SetPriceCalculatorEvent.InputTuple,
-      SetPriceCalculatorEvent.OutputTuple,
-      SetPriceCalculatorEvent.OutputObject
     >;
 
     "SetRole(address,uint256,uint256)": TypedContractEvent<
@@ -723,6 +715,17 @@ export interface AppV1 extends BaseContract {
       SetTokenStatusEvent.InputTuple,
       SetTokenStatusEvent.OutputTuple,
       SetTokenStatusEvent.OutputObject
+    >;
+
+    "UnlockPaywall(address,address,uint64,address)": TypedContractEvent<
+      UnlockPaywallEvent.InputTuple,
+      UnlockPaywallEvent.OutputTuple,
+      UnlockPaywallEvent.OutputObject
+    >;
+    UnlockPaywall: TypedContractEvent<
+      UnlockPaywallEvent.InputTuple,
+      UnlockPaywallEvent.OutputTuple,
+      UnlockPaywallEvent.OutputObject
     >;
   };
 }
