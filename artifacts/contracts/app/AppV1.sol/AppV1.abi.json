@@ -108,17 +108,35 @@
 			"type": "error"
 		},
 		{
-			"inputs": [],
+			"inputs": [
+				{
+					"internalType": "bytes32",
+					"name": "hash",
+					"type": "bytes32"
+				}
+			],
 			"name": "InvalidAffiliateTermsMessageHash",
 			"type": "error"
 		},
 		{
-			"inputs": [],
+			"inputs": [
+				{
+					"internalType": "uint256",
+					"name": "status",
+					"type": "uint256"
+				}
+			],
 			"name": "InvalidContractStatus",
 			"type": "error"
 		},
 		{
-			"inputs": [],
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "account",
+					"type": "address"
+				}
+			],
 			"name": "InvalidDeployer",
 			"type": "error"
 		},
@@ -172,7 +190,13 @@
 			"type": "error"
 		},
 		{
-			"inputs": [],
+			"inputs": [
+				{
+					"internalType": "uint256",
+					"name": "status",
+					"type": "uint256"
+				}
+			],
 			"name": "InvalidTokenStatus",
 			"type": "error"
 		},
@@ -188,7 +212,18 @@
 			"type": "error"
 		},
 		{
-			"inputs": [],
+			"inputs": [
+				{
+					"internalType": "uint128",
+					"name": "invoiceID",
+					"type": "uint128"
+				},
+				{
+					"internalType": "uint256",
+					"name": "blockTimestamp",
+					"type": "uint256"
+				}
+			],
 			"name": "InvoiceExpired",
 			"type": "error"
 		},
