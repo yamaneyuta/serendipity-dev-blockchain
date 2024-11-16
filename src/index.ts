@@ -97,10 +97,15 @@ const main = async () => {
 
 	// ダミーアカウントに対して1wei送信することでスマートコントラクトの初期設定が完了した合図とする。
 	const dummyAccount = "0x0000000000000000000000000000000000000001";
-	const tx = await (signer.provider as JsonRpcProvider).send("eth_sendTransaction", [
+	const provider = signer.provider as JsonRpcProvider;
+	const tx = await provider.send("eth_sendTransaction", [
 		{ from: await signer.getAddress(), to: dummyAccount, value: "0x01" }
 	]);
 	await signer.provider!.waitForTransaction(tx);
+
+	// 定期的にブロックを生成
+	const interval = HARDHAT_CHAIN_ID === chainId ? 12048 : 2126; // 12秒と2.1秒
+	provider.send("evm_setIntervalMining", [interval]);
 
 	console.log(`Privatenet(${chainId}) is ready!`);
 };
