@@ -42,7 +42,6 @@ export interface AppV1Interface extends Interface {
 
   getEvent(
     nameOrSignatureOrTopic:
-      | "EffectivelyTransfer"
       | "Initialized"
       | "SetAccountStatus"
       | "SetContractStatus"
@@ -51,6 +50,7 @@ export interface AppV1Interface extends Interface {
       | "SetRole"
       | "SetTokenStatus"
       | "UnlockPaywall"
+      | "UnlockPaywallTransfer"
   ): EventFragment;
 
   encodeFunctionData(
@@ -151,31 +151,6 @@ export interface AppV1Interface extends Interface {
   decodeFunctionResult(functionFragment: "upgrade", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "version", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "withdraw", data: BytesLike): Result;
-}
-
-export namespace EffectivelyTransferEvent {
-  export type InputTuple = [
-    from: AddressLike,
-    to: AddressLike,
-    token: AddressLike,
-    amount: BigNumberish
-  ];
-  export type OutputTuple = [
-    from: string,
-    to: string,
-    token: string,
-    amount: bigint
-  ];
-  export interface OutputObject {
-    from: string;
-    to: string;
-    token: string;
-    amount: bigint;
-  }
-  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
-  export type Filter = TypedDeferredTopicFilter<Event>;
-  export type Log = TypedEventLog<Event>;
-  export type LogDescription = TypedLogDescription<Event>;
 }
 
 export namespace InitializedEvent {
@@ -309,22 +284,50 @@ export namespace SetTokenStatusEvent {
 
 export namespace UnlockPaywallEvent {
   export type InputTuple = [
-    account: AddressLike,
     signer: AddressLike,
-    postID: BigNumberish,
-    consumer: AddressLike
+    consumer: AddressLike,
+    invoiceID: BigNumberish
   ];
   export type OutputTuple = [
-    account: string,
     signer: string,
-    postID: bigint,
-    consumer: string
+    consumer: string,
+    invoiceID: bigint
   ];
   export interface OutputObject {
-    account: string;
     signer: string;
-    postID: bigint;
     consumer: string;
+    invoiceID: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace UnlockPaywallTransferEvent {
+  export type InputTuple = [
+    signer: AddressLike,
+    from: AddressLike,
+    to: AddressLike,
+    token: AddressLike,
+    amount: BigNumberish,
+    invoiceID: BigNumberish
+  ];
+  export type OutputTuple = [
+    signer: string,
+    from: string,
+    to: string,
+    token: string,
+    amount: bigint,
+    invoiceID: bigint
+  ];
+  export interface OutputObject {
+    signer: string;
+    from: string;
+    to: string;
+    token: string;
+    amount: bigint;
+    invoiceID: bigint;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -565,13 +568,6 @@ export interface AppV1 extends BaseContract {
   >;
 
   getEvent(
-    key: "EffectivelyTransfer"
-  ): TypedContractEvent<
-    EffectivelyTransferEvent.InputTuple,
-    EffectivelyTransferEvent.OutputTuple,
-    EffectivelyTransferEvent.OutputObject
-  >;
-  getEvent(
     key: "Initialized"
   ): TypedContractEvent<
     InitializedEvent.InputTuple,
@@ -627,19 +623,15 @@ export interface AppV1 extends BaseContract {
     UnlockPaywallEvent.OutputTuple,
     UnlockPaywallEvent.OutputObject
   >;
+  getEvent(
+    key: "UnlockPaywallTransfer"
+  ): TypedContractEvent<
+    UnlockPaywallTransferEvent.InputTuple,
+    UnlockPaywallTransferEvent.OutputTuple,
+    UnlockPaywallTransferEvent.OutputObject
+  >;
 
   filters: {
-    "EffectivelyTransfer(address,address,address,uint256)": TypedContractEvent<
-      EffectivelyTransferEvent.InputTuple,
-      EffectivelyTransferEvent.OutputTuple,
-      EffectivelyTransferEvent.OutputObject
-    >;
-    EffectivelyTransfer: TypedContractEvent<
-      EffectivelyTransferEvent.InputTuple,
-      EffectivelyTransferEvent.OutputTuple,
-      EffectivelyTransferEvent.OutputObject
-    >;
-
     "Initialized(uint64)": TypedContractEvent<
       InitializedEvent.InputTuple,
       InitializedEvent.OutputTuple,
@@ -717,7 +709,7 @@ export interface AppV1 extends BaseContract {
       SetTokenStatusEvent.OutputObject
     >;
 
-    "UnlockPaywall(address,address,uint64,address)": TypedContractEvent<
+    "UnlockPaywall(address,address,uint128)": TypedContractEvent<
       UnlockPaywallEvent.InputTuple,
       UnlockPaywallEvent.OutputTuple,
       UnlockPaywallEvent.OutputObject
@@ -726,6 +718,17 @@ export interface AppV1 extends BaseContract {
       UnlockPaywallEvent.InputTuple,
       UnlockPaywallEvent.OutputTuple,
       UnlockPaywallEvent.OutputObject
+    >;
+
+    "UnlockPaywallTransfer(address,address,address,address,uint256,uint128)": TypedContractEvent<
+      UnlockPaywallTransferEvent.InputTuple,
+      UnlockPaywallTransferEvent.OutputTuple,
+      UnlockPaywallTransferEvent.OutputObject
+    >;
+    UnlockPaywallTransfer: TypedContractEvent<
+      UnlockPaywallTransferEvent.InputTuple,
+      UnlockPaywallTransferEvent.OutputTuple,
+      UnlockPaywallTransferEvent.OutputObject
     >;
   };
 }
