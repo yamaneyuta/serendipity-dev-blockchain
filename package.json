@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "scripts": {
     "start": "run-p start:*",
+    "// start:deployのコマンドをhardhat runとすると、artifacts内のファイルが削除されるためts-nodeで起動する": "",
     "start:deploy": "ts-node src/index.ts",
+    "// `HARDHAT_PORT`はプラグイン開発環境のDocker等で指定されます": "",
     "start:node": "HARDHAT_PORT=${HARDHAT_PORT:-8545} yes no | hardhat node --port ${HARDHAT_PORT}",
     "update:package": "npx npm-check-updates -u --target minor"
   },
