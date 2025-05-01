@@ -1,11 +1,10 @@
-import { createSigner } from "../account/createSigner";
+import { Provider } from "ethers";
 
-export const waitForNetworkReady = async (maxWaitSec: number) => {
+export const waitForNetworkReady = async (provider: Provider, maxWaitSec: number) => {
     const loopMax = maxWaitSec;
     for (let i = 0; i < loopMax; i++) {
         try {
-            const signer = await createSigner();
-            await signer.provider!.getNetwork();
+            await provider!.getNetwork();
             break;
         } catch (e) {
             console.log("Network is not ready yet. Retry in 1 second...");
