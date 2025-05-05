@@ -106,7 +106,7 @@ const deployApp = async () => {
 
 	// initialize関数を呼び出す(開発環境以外ではこのような初期化は行わないこと)
 	// コントラクトの所有者はHardhatが生成する1つめのアカウントとする
-	const tx = await appContract.initialize(await hardhatSigner.getAddress());
+	const tx = await appContract.initialize();
 	await tx.wait();
 
 	// デプロイ完了メッセージに追加
