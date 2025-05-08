@@ -1,9 +1,11 @@
 import { BigNumberish, ContractFactory, ethers, JsonRpcProvider, Signer } from "ethers";
 import { getHardhatProvider } from "./lib/getHardhatProvider";
 import { waitForNetworkReady } from "./lib/waitForNetworkReady";
-import { DevERC20, DevOracle, App } from "../typechain-types";
+import { DevERC20 } from "../typechain-types/contracts/privatenet/DevERC20";
 import DevERC20Data from "../artifacts/contracts/privatenet/DevERC20.sol/DevERC20.json";
+import { DevOracle } from "../typechain-types/contracts/privatenet/DevOracle";
 import DevOracleData from "../artifacts/contracts/privatenet/DevOracle.sol/DevOracle.json";
+import { App } from "../typechain-types/contracts/app/App";
 import AppData from "../artifacts/contracts/app/App.sol/App.json";
 import { getHardhatSigners } from "./lib/getHardhatSigners";
 import { createSignersWithSeed } from "./lib/createSignersWithSeed";
