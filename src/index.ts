@@ -94,11 +94,19 @@ const deployApp = async () => {
 	const provider = await getHardhatProvider();
 	const { chainId } = await provider.getNetwork();
 
-	// デプロイに失敗して異なるアドレスになった場合を想定。
-	// 最初はHardhatが生成する1つめのアカウントでデプロイ、以降はseedを元に生成したアカウントでデプロイする
-	const [hardhatSigner] = await getHardhatSigners(1);
-	const [tmpDeployer] = await createSignersWithSeed(await getHardhatProvider(), `App-${chainId}`, { num: 1 });
-	const deployer = chainId === PRIVATENET_CHAIN_ID_ETHEREUM ? hardhatSigner : tmpDeployer;
+	// デプロイに失敗して異なるアドレスになった場合を想定。デプロイアカウントは同一とし、nonceを調整してコントラクトアドレスを調整する。
+	const [deployer] = await getHardhatSigners(1);
+	const sendEmptyTransactionCount = [PRIVATENET_CHAIN_ID_ETHEREUM, PRIVATENET_CHAIN_ID_L2].findIndex((id) => id === chainId);
+	if (sendEmptyTransactionCount < 0) {
+		// ここを通る時は上記配列に対象のチェーンIDを追加してください
+		throw new Error(`[4089EE81] Not implemented chainId: ${chainId}`);
+	}
+	for (let i = 0; i < sendEmptyTransactionCount; i++) {
+		await deployer.sendTransaction({
+			to: ethers.ZeroAddress,
+			value: 0,
+		});
+	}
 
 	const appFactory = await createAppFactory(deployer);
 	let appContract = await appFactory.deploy();
@@ -110,7 +118,7 @@ const deployApp = async () => {
 	await tx.wait();
 
 	// デプロイ完了メッセージに追加
-	DEPLOY_COMPLETION_MESSAGES.push(`- [App] App deployed at ${await appContract.getAddress()}, deployer: ${await deployer.getAddress()}, owner: ${await hardhatSigner.getAddress()}`);
+	DEPLOY_COMPLETION_MESSAGES.push(`- [App] App deployed at ${await appContract.getAddress()}, deployer: ${await deployer.getAddress()}, owner: ${await deployer.getAddress()}`);
 };
 
 

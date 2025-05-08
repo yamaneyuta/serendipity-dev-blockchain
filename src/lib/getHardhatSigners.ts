@@ -13,7 +13,7 @@ export const getHardhatSigners = async (num?: number) => {
 
     num = num || HARDHAT_DEFAULT_ACCOUNT_NUM;
     for (let i = 0; i < num; i++) {
-        const wallet = HDNodeWallet.fromMnemonic(mnemonic, `m/44'/60'/0'/0/${i}`);
+        const wallet = new NonceManager(HDNodeWallet.fromMnemonic(mnemonic, `m/44'/60'/0'/0/${i}`));
         signers.push(await wallet.connect(provider));
     }
     return signers;
