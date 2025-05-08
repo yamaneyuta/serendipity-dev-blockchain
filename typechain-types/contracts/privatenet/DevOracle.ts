@@ -21,9 +21,9 @@ import type {
   TypedLogDescription,
   TypedListener,
   TypedContractMethod,
-} from "../../../common";
+} from "../../common";
 
-export interface TrialOracleV1Interface extends Interface {
+export interface DevOracleInterface extends Interface {
   getFunction(
     nameOrSignature:
       | "decimals"
@@ -35,6 +35,7 @@ export interface TrialOracleV1Interface extends Interface {
       | "latestRound"
       | "latestRoundData"
       | "latestTimestamp"
+      | "phaseId"
       | "setAnswer"
       | "version"
   ): FunctionFragment;
@@ -74,6 +75,7 @@ export interface TrialOracleV1Interface extends Interface {
     functionFragment: "latestTimestamp",
     values?: undefined
   ): string;
+  encodeFunctionData(functionFragment: "phaseId", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "setAnswer",
     values: [BigNumberish, BigNumberish]
@@ -110,6 +112,7 @@ export interface TrialOracleV1Interface extends Interface {
     functionFragment: "latestTimestamp",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "phaseId", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "setAnswer", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "version", data: BytesLike): Result;
 }
@@ -158,11 +161,11 @@ export namespace NewRoundEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
-export interface TrialOracleV1 extends BaseContract {
-  connect(runner?: ContractRunner | null): TrialOracleV1;
+export interface DevOracle extends BaseContract {
+  connect(runner?: ContractRunner | null): DevOracle;
   waitForDeployment(): Promise<this>;
 
-  interface: TrialOracleV1Interface;
+  interface: DevOracleInterface;
 
   queryFilter<TCEvent extends TypedContractEvent>(
     event: TCEvent,
@@ -243,6 +246,8 @@ export interface TrialOracleV1 extends BaseContract {
 
   latestTimestamp: TypedContractMethod<[], [bigint], "view">;
 
+  phaseId: TypedContractMethod<[], [bigint], "view">;
+
   setAnswer: TypedContractMethod<
     [answer: BigNumberish, updatedAt: BigNumberish],
     [void],
@@ -305,6 +310,9 @@ export interface TrialOracleV1 extends BaseContract {
   >;
   getFunction(
     nameOrSignature: "latestTimestamp"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "phaseId"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "setAnswer"
